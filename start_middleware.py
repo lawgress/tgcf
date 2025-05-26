@@ -3,6 +3,10 @@ from ebay_scraper.ebay_api import check_resale_value
 from ebay_scraper.filter_logic import filter_profitable_items
 from ebay_scraper.send_to_tg_group import send_alerts_to_group
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 def main():
     print("[INFO] Scraping products...")
     raw_products = scrape_products()
