@@ -1,24 +1,12 @@
-services:
-  - type: worker
-    name: tgcf-forwarder
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: tgcf --config tgcf/tgcf.config.yml live
-    envVars:
-      - key: TELEGRAM_API_ID
-        value: YOUR_API_ID
-      - key: TELEGRAM_API_HASH
-        value: YOUR_API_HASH
-
 jobs:
   - name: middleware-scheduler
     type: cron
     env: python
-    schedule: "0 */4 * * *"  # Runs every 4 hours
+    schedule: "0 */4 * * *"  # Every 4 hours (adjust as needed)
     buildCommand: pip install -r requirements.txt
     startCommand: python start_middleware.py
     envVars:
       - key: TG_BOT_TOKEN
-        value: YOUR_BOT_TOKEN
+        value: YOUR_TELEGRAM_BOT_TOKEN
       - key: STAGING_CHAT_ID
         value: -1001234567890
