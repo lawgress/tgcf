@@ -130,12 +130,12 @@ if __name__ == "__main__":
 
     argos = get_argos_products()
     logging.info(f"Argos products scraped: {len(argos)}")
-    for p in argos[:3]:
+    for p in argos[:30]:
         logging.info(f"{p['name']} | {p['price']} | {p['url']}")
 
     currys = get_currys_products()
     logging.info(f"Currys products scraped: {len(currys)}")
-    for p in currys[:3]:
+    for p in currys[:30]:
         logging.info(f"{p['name']} | {p['price']} | {p['url']}")
 
     logging.info("Scraping finished. Ready for middleware filtering and eBay check.")
