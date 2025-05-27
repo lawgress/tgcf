@@ -15,13 +15,13 @@ load_dotenv()
 
 def main():
     print("[INFO] Scraping products...")
-    raw_products = scrape_products()
+    raw_products = get_argos_products()
 
     print("[INFO] Checking resale values...")
-    enriched = check_resale_value(raw_products)
+    enriched = get_ebay_resale_data(raw_products)
 
     print("[INFO] Filtering profitable items...")
-    filtered = filter_profitable_items(enriched)
+    filtered = calculate_profit(enriched)
 
     with open("ebay_scraper/output/alerts.json", "w") as f:
         json.dump(filtered, f, indent=2)
