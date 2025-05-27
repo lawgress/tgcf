@@ -3,10 +3,14 @@ import os
 from fastapi import FastAPI
 from datetime import datetime
 
+import asyncio
+import os
 from middleware.ebay_scraper.retailer_scraper import get_argos_products, get_currys_products
 from middleware.ebay_scraper.ebay_api import get_ebay_resale_data
 from middleware.ebay_scraper.filter_logic import calculate_profit
 from middleware.ebay_scraper.send_to_tg_group import send_alerts_to_group
+from fastapi import FastAPI
+import uvicorn
 
 app = FastAPI()
 
