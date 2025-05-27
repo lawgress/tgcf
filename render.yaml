@@ -1,12 +1,14 @@
-jobs:
-  - name: middleware-scheduler
-    type: cron
+services:
+  - name: tgcf-middleware
+    type: web
     env: python
-    schedule: "0 */4 * * *"  # Every 4 hours (adjust as needed)
     buildCommand: pip install -r requirements.txt
     startCommand: python start_middleware.py
     envVars:
       - key: TG_BOT_TOKEN
-        value: YOUR_TELEGRAM_BOT_TOKEN
+        value: 7857976068:AAF0aCyAe38we7XrlP8PmuUIY7ythSMYH_M
       - key: STAGING_CHAT_ID
-        value: -1001234567890
+        value: 7857976068
+
+
+
