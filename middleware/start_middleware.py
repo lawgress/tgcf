@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from ebay_scraper.scraper import scrape_products
+from middleware.ebay_scraper.scraper import scrape_products
 from ebay_scraper.ebay_api import check_resale_value
 from ebay_scraper.filter_logic import filter_profitable_items
 from ebay_scraper.send_to_tg_group import send_alerts_to_group
