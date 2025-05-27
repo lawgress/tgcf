@@ -42,7 +42,7 @@ async def alert_loop():
         except Exception as e:
             logging.error(f"[ERROR] Loop failed: {e}")
 
-        await asyncio.sleep(1800)  # wait 30 mins before next run
+        await asyncio.sleep(180)  # wait 30 mins before next run
 
 @app.on_event("startup")
 async def startup_event():
