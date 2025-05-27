@@ -1,6 +1,6 @@
-from middleware.retailer_scraper import get_argos_products, get_currys_products
-from middleware.ebay_api import get_ebay_resale_data
-from middleware.filter_logic import calculate_profit
+from middleware.ebay_scraper.retailer_scraper import get_argos_products, get_currys_products
+from middleware.ebay_scraper.ebay_api import get_ebay_resale_data
+from middleware.ebay_scraper.filter_logic import calculate_profit
 from tgcf.plugins.sender import send_message
 
 async def scan_and_notify():
