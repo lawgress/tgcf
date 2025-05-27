@@ -1,7 +1,8 @@
 from middleware.ebay_scraper.retailer_scraper import get_argos_products, get_currys_products
 from middleware.ebay_scraper.ebay_api import get_ebay_resale_data
 from middleware.ebay_scraper.filter_logic import calculate_profit
-from tgcf.plugins.sender import send_message
+from middleware.ebay_scraper.send_to_tg import send_alert
+
 
 async def scan_and_notify():
     all_products = get_argos_products() + get_currys_products()
@@ -16,7 +17,7 @@ async def scan_and_notify():
                 f"Avg. Resell: £{round(sum(resale)/len(resale), 2)}\n"
                 f"Estimated Profit: *£{profit}*"
             )
-            await send_message(msg, markdown=True)
+            send_alert(msg)
 
 # Optional: Run manually if called directly
 if __name__ == "__main__":
