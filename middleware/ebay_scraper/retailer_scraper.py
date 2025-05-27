@@ -4,6 +4,13 @@ import logging
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
+import requests
+from bs4 import BeautifulSoup
+import time
+import random
+import logging
+import json
+
 from middleware.retailer_scraper import get_argos_products, get_currys_products
 from middleware.ebay_api import get_ebay_resale_data
 from middleware.filter_logic import calculate_profit
