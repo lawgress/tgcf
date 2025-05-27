@@ -1,32 +1,49 @@
-import sys
+import asyncio
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from ebay_scraper.scraper import scrape_products
-from ebay_scraper.ebay_api import check_resale_value
-from ebay_scraper.filter_logic import filter_profitable_items
-from ebay_scraper.send_to_tg_group import send_alerts_to_group
-
+import logging
+from fastapi import FastAPI
 from dotenv import load_dotenv
-import json
+
+from middleware.retailer_scraper import get_argos_products, get_currys_products
+from middleware.ebay_api import get_ebay_resale_data
+from middleware.filter_logic import calculate_profit
+from middleware.send_to_tg import send_message  # staging
+# from middleware.send_to_tg_group import send_message  # prod version
 
 load_dotenv()
+app = FastAPI()
 
-def main():
-    print("[INFO] Scraping products...")
-    raw_products = scrape_products()
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s: %(message)s')
 
-    print("[INFO] Checking resale values...")
-    enriched = check_resale_value(raw_products)
+async def alert_loop():
+    while True:
+        try:
+            logging.info("[LOOP] Starting scrape & filter job...")
+            products = get_argos_products() + get_currys_products()
 
-    print("[INFO] Filtering profitable items...")
-    filtered = filter_profitable_items(enriched)
+            for product in products:
+                resale_prices = get_ebay_resale_data(product["name"])
+                if not resale_prices:
+                    continue
 
-    with open("ebay_scraper/output/alerts.json", "w") as f:
-        json.dump(filtered, f, indent=2)
+                profit = calculate_profit(product["price"], resale_prices)
+                if profit:
+                    msg = (
+                        f"🔥 *{product['name']}*\n"
+                        f"[Buy Now]({product['url']})\n"
+                        f"Retail: £{product['price']}\n"
+                        f"Avg. Resell: £{round(sum(resale_prices)/len(resale_prices), 2)}\n"
+                        f"Estimated Profit: *£{profit}*"
+                    )
+                    logging.info(f"[ALERT] Sending: {product['name']}")
+                    await send_message(msg, markdown=True)
 
-    print("[INFO] Sending to Telegram group...")
-    send_alerts_to_group(filtered)
+            logging.info("[LOOP] Done. Sleeping...")
+        except Exception as e:
+            logging.error(f"[ERROR] Loop failed: {e}")
 
-if __name__ == "__main__":
-    main()
+        await asyncio.sleep(1800)  # wait 30 mins before next run
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(alert_loop())
