@@ -3,12 +3,13 @@ services:
     type: web
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python start_middleware.py
+    startCommand: python -m middleware.start_middleware
     envVars:
       - key: TG_BOT_TOKEN
         value: 7857976068:AAF0aCyAe38we7XrlP8PmuUIY7ythSMYH_M
       - key: STAGING_CHAT_ID
-        value: 7857976068
+        value: "7857976068"
+
 
 
 
