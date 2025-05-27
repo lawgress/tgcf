@@ -1,33 +1,37 @@
-import sys
+import asyncio
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from ebay_scraper.retailer_scraper import get_argos_products
-from ebay_scraper.retailer_scraper import get_currys_products
-from ebay_scraper.ebay_api import get_ebay_resale_data
-from ebay_scraper.filter_logic import calculate_profit
-from ebay_scraper.send_to_tg_group import send_alerts_to_group
-
 from dotenv import load_dotenv
-import json
+
+from middleware.retailer_scraper import get_argos_products, get_currys_products
+from middleware.ebay_api import get_ebay_resale_data
+from middleware.filter_logic import calculate_profit
+from tgcf.plugins.sender import send_message
 
 load_dotenv()
 
-def main():
+async def main():
     print("[INFO] Scraping products...")
-    raw_products = get_argos_products()
+    products = get_argos_products() + get_currys_products()
 
-    print("[INFO] Checking resale values...")
-    enriched = get_ebay_resale_data(raw_products)
+    print("[INFO] Checking resale values and filtering...")
+    for product in products:
+        resale_prices = get_ebay_resale_data(product["name"])
+        if not resale_prices:
+            continue
+        
+        profit = calculate_profit(product["price"], resale_prices)
+        if profit:
+            msg = (
+                f"🔥 *{product['name']}*\n"
+                f"[Buy Now]({product['url']})\n"
+                f"Retail: £{product['price']}\n"
+                f"Avg. Resell: £{round(sum(resale_prices)/len(resale_prices), 2)}\n"
+                f"Estimated Profit: *£{profit}*"
+            )
+            print(f"[ALERT] Sending alert for: {product['name']}")
+            await send_message(msg, markdown=True)
 
-    print("[INFO] Filtering profitable items...")
-    filtered = calculate_profit(enriched)
-
-    with open("ebay_scraper/output/alerts.json", "w") as f:
-        json.dump(filtered, f, indent=2)
-
-    print("[INFO] Sending to Telegram group...")
-    send_alerts_to_group(filtered)
+    print("[DONE] Alerts sent.")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
