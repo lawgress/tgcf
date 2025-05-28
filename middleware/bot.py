@@ -447,7 +447,7 @@ def main():
     all_products = argos_products + currys_products
     
     # Print summary
-    print_product_summary(all_products)
+    #print_product_summary(all_products)
     
     # Save all products
     save_products_to_json(all_products, "all_products.json")
