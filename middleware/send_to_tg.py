@@ -11,7 +11,7 @@ if not TG_BOT_TOKEN or not CHAT_ID:
 
 bot = Bot(token=TG_BOT_TOKEN)
 
-def send_alert(message: str):
+def send_message(message: str):
     try:
         bot.send_message(chat_id=CHAT_ID, text=message, parse_mode="Markdown")
         print("[INFO] Telegram message sent successfully.")
