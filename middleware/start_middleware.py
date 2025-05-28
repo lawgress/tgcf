@@ -8,26 +8,30 @@ from send_to_tg import send_message  # staging
 app = FastAPI()  # ✅ Define the FastAPI app BEFORE decorators
 
 
-@app.on_event("startup")
-async def startup_event():
+
+from contextlib import asynccontextmanager
+import asyncio
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     print("🚀 Starting middleware FastAPI app...")
-    while True:
-        print("[LOOP] Starting scrape & filter job...")
 
-        # ✅ Force test product
-        products = get_argos_products()
-
-        if not products:
-            print("[LOOP] No products found. Skipping iteration.")
-        else:
+    async def background_loop():
+        while True:
+            print("[LOOP] Starting scrape & filter job...")
+            products = get_argos_products()
             print(f"[LOOP] Total products scraped: {len(products)}")
-
+            if not products:
+                print("[LOOP] No products found. Skipping iteration.")
             for product in products:
-                print(f"[DEBUG] Raw: {product}")
-                # Optional: test filtering logic
-                if is_profitable(product):
-                    print(f"[✅] PROFITABLE: {product['name']}")
-                else:
-                    print(f"[❌] Not profitable: {product['name']}")
+                print(f"[DEBUG] Product: {product['name']}")
+                send_to_tg_group(product)
+            await asyncio.sleep(180)
 
-        await asyncio.sleep(60 * 5)  # 5-minute wait
+    # Start loop
+    asyncio.create_task(background_loop())
+    yield  # Lifespan active
+    print("🛑 Middleware shutting down...")
+
+app = FastAPI(lifespan=lifespan)
