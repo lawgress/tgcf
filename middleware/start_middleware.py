@@ -1,4 +1,4 @@
-from retailers.argos import get_argos_products
+from retailer_scraper import get_argos_products
 from filter_logic import is_profitable
 
 @app.on_event("startup")
