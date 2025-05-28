@@ -4,10 +4,10 @@ import logging
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
-from middleware.retailer_scraper import get_argos_products, get_currys_products
-from middleware.ebay_api import get_ebay_resale_data
-from middleware.filter_logic import calculate_profit
-from middleware.send_to_tg import send_message  # staging
+from middleware.ebay_scraper.retailer_scraper import get_argos_products, get_currys_products
+from middleware.ebay_scraper.ebay_api import get_ebay_resale_data
+from middleware.ebay_scraper.filter_logic import calculate_profit
+from middleware.ebay_scraper.send_to_tg import send_message  # staging
 # from middleware.send_to_tg_group import send_message  # prod version
 
 load_dotenv()
