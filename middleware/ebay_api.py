@@ -9,7 +9,7 @@ def get_ebay_resale_data(query):
         "q": query,
         "limit": 10,
         "sort": "-price",
-        "filter": "price:[5..100000]",
+        "filter": "price:[20..1000]",
         "fieldgroups": "ASPECT_REFINEMENTS"
     }
     url = "https://api.ebay.com/buy/browse/v1/item_summary/search"
