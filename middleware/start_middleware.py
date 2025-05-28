@@ -3,7 +3,7 @@ from filter_logic import is_profitable
 
 from fastapi import FastAPI
 import asyncio
-from send_to_tg_group import send_message
+from send_to_tg import send_message  # staging
 
 app = FastAPI()  # ✅ Define the FastAPI app BEFORE decorators
 
