@@ -1,6 +1,13 @@
 from retailer_scraper import get_argos_products
 from filter_logic import is_profitable
 
+from fastapi import FastAPI
+import asyncio
+from send_to_tg_group import send_message
+
+app = FastAPI()  # ✅ Define the FastAPI app BEFORE decorators
+
+
 @app.on_event("startup")
 async def startup_event():
     print("🚀 Starting middleware FastAPI app...")
